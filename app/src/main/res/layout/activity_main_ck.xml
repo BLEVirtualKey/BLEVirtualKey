@@ -1,0 +1,124 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_toolbar"></include>
+
+    <TextView
+        android:id="@+id/textView_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_tit"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_ble_iscon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="蓝牙：未连接"
+            android:textColor="#8199b6"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_ble_ss"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="身份：未认证"
+            android:textColor="#8199b6"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_ble_pos"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="位置：未知"
+            android:textColor="#8199b6"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_ble_dist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="RSSI：未知"
+            android:textColor="#8199b6"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/mainListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:src="@drawable/vehicle_image_car" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_engine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ib_se_engine" />
+
+        <ImageButton
+            android:id="@+id/ib_doorlock"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ib_se_doorlock" />
+
+        <ImageButton
+            android:id="@+id/ib_airconditon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ib_se_aircondition" />
+
+        <ImageButton
+            android:id="@+id/ib_trunk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/ib_se_trunk" />
+    </LinearLayout>
+
+</LinearLayout>

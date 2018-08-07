@@ -1,0 +1,123 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'dexguard'
+apply plugin: 'com.google.protobuf'
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+
+    defaultConfig.with {
+        applicationId "com.gemalto.remoteclient.sdk"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 1
+        versionName "3.0"
+    }
+
+    lintOptions.with {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    dexOptions {
+        javaMaxHeapSize "4g" //specify the heap size for the dex process
+        preDexLibraries = false //delete the already predexed libraries
+    }
+
+    signingConfigs {
+        debug {
+            storeFile "/home/clive/Workspace/AndroidStudioProjects/ble-gemalto-demo/keystore/se_eval.keystore" as File
+            storePassword "123456789"
+            keyAlias "se_eval"
+            keyPassword "123456789"
+        }
+        release {
+            storeFile "/home/clive/Workspace/AndroidStudioProjects/ble-gemalto-demo/keystore/se_eval.keystore" as File
+            storePassword "123456789"
+            keyAlias "se_eval"
+            keyPassword "123456789"
+        }
+    }
+
+    buildTypes {
+        release {
+//            proguardFile getDefaultDexGuardFile('dexguard-release-conservative.pro')
+            proguardFile 'dexguard-project.txt'
+            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            // proguardFile getDefaultDexGuardFile('dexguard-release-conservative.pro')
+            proguardFile 'dexguard-project.txt'
+            signingConfig signingConfigs.debug
+        }
+    }
+    sourceSets {
+        main {
+            proto {
+                //main目录新建proto目录
+                srcDir 'src/main/proto'
+                include '**/*.proto'
+            }
+            java {
+                srcDir 'src/main/java'
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+}
+
+//构建task
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.1.0'
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.builtins {
+                java {}
+                // Add cpp output without any option.
+                // DO NOT omit the braces if you want this builtin to be added.
+                cpp {}
+            }
+        }
+    }
+    //生成目录
+    generatedFilesBaseDir = "$projectDir/src/generated"
+}
+
+repositories {
+    flatDir {
+        dirs 'libs' //this way we can find the .aar file in libs folder
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.android.support:recyclerview-v7:27.0.2'
+
+    implementation 'com.madgag.spongycastle:core:1.50.0.0'
+    implementation 'com.google.code.gson:gson:2.4'
+    implementation(name: 'virtualkey-java-release', ext: 'aar')
+    implementation 'com.android.support:support-v4:27.0.2'
+    implementation files('libs/eseSimuSDK.jar')
+    testImplementation 'junit:junit:4.12'
+    implementation project(':FastBleLib')
+
+    implementation 'com.google.protobuf:protobuf-java:3.1.0'
+    implementation 'com.google.protobuf:protoc:3.1.0'
+
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    // (see https://github.com/ReactiveX/RxJava/releases for latest 2.x.x version)
+    implementation "io.reactivex.rxjava2:rxjava:2.1.17"
+}

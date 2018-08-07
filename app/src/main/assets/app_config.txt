@@ -1,0 +1,8 @@
+tt_service_id=1349413703
+tt_ta_id=44270568
+
+st_tsm_url=https://test-valeo-tam-handset.tsm.gemalto.com:443/Tsm/SpGpTee/teeServlet
+st_se_url=https://test-valeo-tam-handset.tsm.gemalto.com:443/Kps/bsaServletV21
+st_service_id=10000002
+st_sp_id=100002
+st_ta_id=AABBCCDDAABBCCDDEEFF200000000021

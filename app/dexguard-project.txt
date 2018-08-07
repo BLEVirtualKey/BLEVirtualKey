@@ -1,0 +1,43 @@
+# DexGuard's default settings are fine for this sample application.
+
+# Display some more statistics about the processed code.
+-verbose
+
+# Encrypt all strings in the class that checks the environment and sets up
+# the activity.
+-encryptstrings class virtualkey.utilities.AntiTampering
+-encryptstrings class virtualkey.utilities.AntiHooking
+#encrypt server public key hashes
+-encryptstrings "A1211C2536D7A1F120874CBE86B841A1"
+-encryptstrings "5C6227398E3AEC018EE55B29F8A78799"
+
+# Encrypt the classes that check the environment, as another layer of
+# protection.
+-encryptclasses virtualkey.utilities.AntiTampering
+-encryptclasses virtualkey.utilities.AntiHooking
+-encryptclasses com.guardsquare.dexguard.runtime.**
+
+# Encrypt all asset files. In this project, it's a single message file.
+#-encryptassetfiles assets/**
+
+-dontoptimize
+#-dontpreverify
+#-dontobfuscate
+-dontusemixedcaseclassnames
+-dontshrink
+
+-dontwarn org.apache.**
+-dontwarn android.support.v4.**
+
+
+
+-keep class com.gto.tee.agentlibrary.util.BindingHelper {
+    public *;
+}
+-keep class com.gemalto.android.root.** {*;}
+-keepclasseswithmembernames,includedescriptorclasses class * { native <methods>;} #don't obfuscate native methods declaration
+-keepclassmembers class * implements com.gto.tee.agentlibrary.Validatable { public protected private *; } #SPPA JSON
+-keepclassmembers class * implements com.gemalto.teecompatibility.bsa.protocol.Validatable { public protected private *; } #Bootstrap JSON
+-keepclassmembers enum * { *; } #to prevent crash in com.google.gson.internal.bind.TypeAdapters$EnumTypeAdapter
+-keepresourcefiles **.so
+

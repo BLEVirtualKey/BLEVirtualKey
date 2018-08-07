@@ -1,0 +1,109 @@
+﻿/**************************************************************************                                                                                                                                  
+   Copyright (C) 2015-2018 Shenzhen Auto-link world Information Technology Co., Ltd.
+   All Rights Reserved
+
+   Name: ble_vck.proto
+   Purpose:
+
+   Created By:    Clive Lau <liuxusheng@auto-link.com.cn>
+   Created Date:  2018-07-17
+
+   Changelog:
+   Date         Desc
+   2018-07-17   Created by Clive Lau
+**************************************************************************/
+
+/*
+ *  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ * | Direction | APP --> BLE --> TBox                                                                                                                                                           |
+ * |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * | Diagram   | Data Package (APP side) --> ProtoBuf Serialization --> Encryption Algorithm --> BLE GATT --> Decryption Algorithm --> ProtoBuf Anti-Serialization --> Data Package (TBox side) |
+ *  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ *
+ *  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ * | Direction | TBox --> BLE --> APP                                                                                                                                                           |
+ * |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * | Diagram   | Data Package (TBox side) --> ProtoBuf Serialization --> Encryption Algorithm --> BLE GATT --> Decryption Algorithm --> ProtoBuf Anti-Serialization --> Data Package (APP side) |
+ *  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ */
+
+syntax = "proto3";
+option java_package = "net.angrycode.bean";
+option java_outer_classname="BleVckProtocol"; 
+
+// 通用状态
+enum GenericState
+{
+	STATE_OFF = 0;
+	STATE_ON = 1;
+	STATE_UNKNOWN = 255;
+}
+
+//消息类型
+enum EnumMsgType
+{
+	TYPE0 = 0; 													//仅为填充值，无实际意义
+	TYPE1 = 1;  												//仅为填充值，无实际意义
+	ACK = 2;													//通用应答消息
+	SEID_REQ = 3; 												//请求SEID
+	SEID_RESP = 4; 												//应答SEID
+	AUTH_REQ = 5;												//请求认证
+	AUTH_RESP = 6;												//应答认证
+	AC_CTRL_REQ = 7;                                            //请求空调控制
+	AC_CTRL_RESP = 8;                                           //应答空调控制
+	TRUNK_CTRL_REQ = 9;                                         //请求后备箱控制
+	TRUNK_CTRL_RESP = 10;                                       //应答后备箱控制
+	ENGINE_CTRL_REQ = 11;                                       //请求发动机控制
+	ENGINE_CTRL_RESP = 12;                                      //应答发动机控制
+	DOOR_LOCK_CTRL_REQ = 13;                                    //请求车门锁控制
+	DOOR_LOCK_CTRL_RESP = 14;                                   //应答车门锁控制
+}
+
+
+//----------------------------------通用消息---------------------------------------------------------
+
+//应答消息
+message MsgAck
+{
+	bool 		status = 1; 									//结果 true:成功  false:失败
+	string 		code = 2; 										//描述码：提供相应码表
+}
+
+//顶层消息
+message MsgTop
+{
+	MsgHead msg_head = 1; 									    //通用头，必填字段
+	MsgAck	ack = 2;											//通用回复消息
+	MsgAuthentication auth = 3;								    //认证消息
+	MsgVehicleCtrlReq vehicle_ctrl = 4;                         //请求车控命令
+}
+
+//通用消息头，每个消息都需要包含消息头
+message MsgHead
+{
+	uint32 message_id = 1; 										//消息编号 tbox顺序生成
+	EnumMsgType msg_type = 2; 									//消息类型
+	uint32 msg_c_time = 3; 										//消息生成时间(采集时间)，UTC时间，1970年1月1日以来秒数
+}
+
+//认证信息
+message MsgAuthentication
+{
+	string se_id = 1; 										    //The ID of SE resides in vehicle
+	int32  tee_id = 2; 										    //The ID of TEE resides in mobile
+	int32  c_rnd = 4; 										    //APP Client Random number
+	int32  t_rnd = 3; 										    //TBox Random number
+	int32  kicc = 5; 										    //32 bits random in mobile side as input factor for sk
+	int32  kifd = 6; 								            //32 bits random in vehicle side as input factor for sk
+	int32  sk = 7;                                              //Session Key. For protecting conversation between mobile and vehicle
+	int32  ssc = 8;                                             //Sender Sequence Counter. Message sender's sequence counter for message queue
+}
+
+//车控信息
+message MsgVehicleCtrlReq
+{
+	GenericState ac_status = 1;                                 //空调状态
+	GenericState trunk_status = 2;                              //后备箱状态
+	GenericState engine_status = 3;                             //发动机状态
+	GenericState door_lock_status = 4;                          //车门锁状态
+}

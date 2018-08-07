@@ -1,0 +1,5 @@
+include ':app', ':tee-sdk', ':virtualkey-java', ':virtualkey-tlc', ':virtualkey-tlc:gp', ':virtualkey-ta:gp',':FastBleLib'
+project(':virtualkey-tlc:gp').projectDir = new File(rootDir, 'virtualkey-tlc/gp')
+//project(':virtualkey-tlc:trustonic').projectDir = new File(rootDir, 'virtualkey-tlc/trustonic')
+project(':virtualkey-ta:gp').projectDir = new File(rootDir, 'virtualkey-ta/gp')
+//project(':virtualkey-ta:trustonic').projectDir = new File(rootDir, 'virtualkey-ta/trustonic')
