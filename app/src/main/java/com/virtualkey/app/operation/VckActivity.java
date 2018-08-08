@@ -88,9 +88,10 @@ public class VckActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
         BleManager.getInstance().clearCharacterCallback(mBleDevice);
         ObserverManager.getInstance().deleteObserver(this);
-
         if (mDisposable != null) {
             mDisposable.dispose();
         }
@@ -117,15 +118,11 @@ public class VckActivity extends AppCompatActivity implements Observer {
                                     new BleWriteCallback() {
                                         @Override
                                         public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-//                                            mTvBleSs.setText("身份：已认证");
-//                                            if (mProgressDialog.isShowing())
-//                                                mProgressDialog.dismiss();
                                             mProgressDialog.setTitle("请求SEID & TRND");
                                         }
 
                                         @Override
                                         public void onWriteFailure(final BleException exception) {
-                                            ToastUtils.toastShort(exception.toString());
                                             mTvBleSs.setText("身份：未认证");
                                             if (mProgressDialog.isShowing())
                                                 mProgressDialog.dismiss();
@@ -141,6 +138,7 @@ public class VckActivity extends AppCompatActivity implements Observer {
         if (!mTaAdmin.isTAInstalled()) {
             App.getLoggerHelper().e("Please install the TA service first");
             ToastUtils.showToast(this, "Please install the TA service first");
+            finish();
         } else {
             mTaAdmin.setUserData("1234");
 
@@ -179,8 +177,7 @@ public class VckActivity extends AppCompatActivity implements Observer {
                 App.showAlertDialog(this, "loadCVK failed");
                 App.getLoggerHelper().e("loadCVK failed");
             } else {
-                if (mProgressDialog.isShowing())
-                    mProgressDialog.setTitle("成功下载VCK");
+                mProgressDialog.setTitle("成功下载VCK");
                 App.getLoggerHelper().i("loadCVK success");
             }
         }
@@ -198,9 +195,10 @@ public class VckActivity extends AppCompatActivity implements Observer {
                 mProgressDialog.dismiss();
             App.showAlertDialog(this, "requestVckInfo failed");
             App.getLoggerHelper().e("requestVckInfo failed");
+            ToastUtils.showToast(this, "requestVckInfo failed");
+            finish();
         } else {
-            if (mProgressDialog.isShowing())
-                mProgressDialog.setTitle("成功请求VckInfo");
+            mProgressDialog.setTitle("成功请求VckInfo");
             App.getLoggerHelper().i("requestVckInfo success");
         }
 
@@ -219,9 +217,10 @@ public class VckActivity extends AppCompatActivity implements Observer {
                 mProgressDialog.dismiss();
             App.showAlertDialog(this, "requestRandom failed");
             App.getLoggerHelper().e("requestRandom failed");
+            ToastUtils.showToast(this, "requestRandom failed");
+            finish();
         } else {
-            if (mProgressDialog.isShowing())
-                mProgressDialog.setTitle("成功请求CCrypto");
+            mProgressDialog.setTitle("成功请求CCrypto");
             App.getLoggerHelper().i("requestRandom success");
         }
 
@@ -240,9 +239,12 @@ public class VckActivity extends AppCompatActivity implements Observer {
                 mProgressDialog.dismiss();
             App.showAlertDialog(this, "requestAuthSS failed");
             App.getLoggerHelper().e("requestAuthSS failed");
+            ToastUtils.showToast(this, "requestAuthSS failed");
+            finish();
         } else {
             if (mProgressDialog.isShowing())
-                mProgressDialog.setTitle("成功认证");
+                mProgressDialog.dismiss();
+            ToastUtils.showToast(this,"成功认证");
             mTvBleSs.setText("身份：已认证");
             App.getLoggerHelper().i("requestAuthSS success");
         }
@@ -278,7 +280,7 @@ public class VckActivity extends AppCompatActivity implements Observer {
         mIbAirconditon = findViewById(R.id.ib_airconditon);
         mIbTrunk = findViewById(R.id.ib_trunk);
         mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCancelable(true);
+        mProgressDialog.setCancelable(false);
 
         mToolbar.setTitle("");
         TextView tv_toolbar_title = findViewById(R.id.tv_toolbar_title);
@@ -291,7 +293,8 @@ public class VckActivity extends AppCompatActivity implements Observer {
         mTvBleIsConn.setText("蓝牙：已连接");
         mTvBleSs.setText("身份：认证中");
         mProgressDialog.setTitle("身份认证，请稍等...");
-        mProgressDialog.show();
+        if (!mProgressDialog.isShowing())
+            mProgressDialog.show();
         mCharacteristic = mWrChara = null;
     }
 
@@ -396,6 +399,7 @@ public class VckActivity extends AppCompatActivity implements Observer {
                         ToastUtils.toastShort(exception.toString());
                         if (mProgressDialog.isShowing())
                             mProgressDialog.dismiss();
+                        finish();
                     }
                 });
     }
@@ -421,9 +425,11 @@ public class VckActivity extends AppCompatActivity implements Observer {
                     public void onCharacteristicChanged(byte[] data) {
 //                            ToastUtils.toastShort("Read:" + HexUtil.formatHexString(mNotifyChara.getValue(), true));
 //                        App.getLoggerHelper().e("====>mNotifyChara run: " + HexUtil.formatHexString(mNotifyChara.getValue()));
+
                         if (mProgressDialog.isShowing()) {
                             mProgressDialog.dismiss();
                         }
+
                         if (HexUtil.formatHexString(mNotifyChara.getValue()).substring(0, 6).equals(HexUtil.formatHexString(Constant.RESP_DOOR_ON_CMD).toLowerCase())) {
                             ToastUtils.toastShort("车门开启成功");
                             mIbDoorlock.setSelected(true);
@@ -449,8 +455,8 @@ public class VckActivity extends AppCompatActivity implements Observer {
                             ToastUtils.toastShort("后备箱关闭成功");
                             mIbTrunk.setSelected(false);
                         } else if (HexUtil.formatHexString(mNotifyChara.getValue()).substring(0, 6).equals(HexUtil.formatHexString(Constant.RESP_SE_TRND).toLowerCase())) {
-                            if (mProgressDialog.isShowing())
-                                mProgressDialog.setTitle("应答SEID & TRND");
+                            mProgressDialog.setTitle("应答SEID & TRND");
+
                             ToastUtils.toastShort("获得RESP_SE_TRND");
                             System.arraycopy(mNotifyChara.getValue(), 5, mSeId, 0, mSeId.length);
                             System.arraycopy(mNotifyChara.getValue(), 23, mTRnd, 0, mTRnd.length);
@@ -475,11 +481,11 @@ public class VckActivity extends AppCompatActivity implements Observer {
                             System.arraycopy(reqVckInfo, 0, reqAuth, Constant.REQ_AUTH.length + reqRnd.length, reqVckInfo.length);
                             App.getLoggerHelper().i("reqAuth:" + HexUtil.formatHexString(reqAuth));
                             writeBLE("请求认证", reqAuth);
-                            if (mProgressDialog.isShowing())
-                                mProgressDialog.setTitle("请求认证");
+
+                            mProgressDialog.setTitle("请求认证");
                         } else if (HexUtil.formatHexString(mNotifyChara.getValue()).substring(0, 6).equals(HexUtil.formatHexString(Constant.RESP_AUTH).toLowerCase())) {
-                            if (mProgressDialog.isShowing())
-                                mProgressDialog.setTitle("应答认证");
+                            mProgressDialog.setTitle("应答认证");
+
                             ToastUtils.toastShort("获得RESP_AUTH");
                             App.getLoggerHelper().i("获得RESP_AUTH");
 

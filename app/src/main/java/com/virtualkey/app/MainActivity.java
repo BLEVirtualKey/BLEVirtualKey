@@ -142,8 +142,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
         BleManager.getInstance().disconnectAllDevice();
         BleManager.getInstance().destroy();
+        uninstallTa();
+        App.getLoggerHelper().i("==> MainActivity onDestory");
     }
 
     @Override
@@ -197,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         operatingAnim = AnimationUtils.loadAnimation(this, R.anim.rotate);
         operatingAnim.setInterpolator(new LinearInterpolator());
         progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(true);
+        progressDialog.setCancelable(false);
 
         mDeviceAdapter = new DeviceAdapter(this);
         mDeviceAdapter.setOnDeviceClickListener(new DeviceAdapter.OnDeviceClickListener() {
@@ -277,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setDeviceName(true, names)   // 只扫描指定广播名的设备，可选
                 .setDeviceMac(mac)                  // 只扫描指定mac的设备，可选
                 .setAutoConnect(isAutoConnect)      // 连接时的autoConnect参数，可选，默认false
-                .setScanTimeOut(10000)              // 扫描超时时间，可选，默认10秒
+                .setScanTimeOut(5000)              // 扫描超时时间，可选，默认10秒
                 .build();
         BleManager.getInstance().initScanRule(scanRuleConfig);
     }
@@ -310,9 +314,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 img_loading.setVisibility(View.INVISIBLE);
                 btn_scan.setText(getString(R.string.start_scan));
                 switch (mDeviceAdapter.getCount()) {
-                    case 0:
-                        btn_scan.performClick();
-                        break;
                     case 1:
                         BleDevice bleDevice = mDeviceAdapter.getItem(0);
                         if (!BleManager.getInstance().isConnected(bleDevice)) {
@@ -320,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         break;
                     default:
+                        btn_scan.performClick();
                         break;
                 }
             }
@@ -331,7 +333,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStartConnect() {
                 progressDialog.setTitle("开始配对");
-                progressDialog.show();
+                if (!progressDialog.isShowing())
+                    progressDialog.show();
             }
 
             @Override
@@ -339,13 +342,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 img_loading.clearAnimation();
                 img_loading.setVisibility(View.INVISIBLE);
                 btn_scan.setText(getString(R.string.start_scan));
-                progressDialog.dismiss();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                progressDialog.dismiss();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
                 mDeviceAdapter.addDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
                 if (BleManager.getInstance().isConnected(bleDevice)) {
@@ -359,7 +364,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-                progressDialog.dismiss();
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
 
                 mDeviceAdapter.removeDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
@@ -413,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case Manifest.permission.READ_PHONE_STATE:
                     if (grantResults.length > 0) {
                         if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                            mTaAdmin = TaAdmin.getInstance(this);
+                            mTaAdmin = TaAdmin.getInstance(App.getContext());
                             installTa();
                         } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                             onPermissionGranted(permission);
@@ -501,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 } else {
                     App.getLoggerHelper().i("clivelau onPermissionGranted(READ_PHONE_STATE): called");
-                    mTaAdmin = TaAdmin.getInstance(this);
+                    mTaAdmin = TaAdmin.getInstance(App.getContext());
                     installTa();
                 }
                 break;
@@ -532,7 +538,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (resultCode == AgentResultCodes.SUCCESS) {
             Dialog dialog = null;
-            progressDialog.dismiss();
+            if (progressDialog.isShowing())
+                progressDialog.dismiss();
             if (mOperation == Operation.Install) {
                 dialog = new AlertDialog.Builder(this)
                         .setMessage("Service installed successfully.")
@@ -572,6 +579,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             App.getLoggerHelper().i("serviceId:" + serviceId);
             byte[] hashOfDeviceId = mTaAdmin.getDeviceID();
             App.getLoggerHelper().i("hashOfDeviceId:" + hashOfDeviceId);
+            byte[] teeID=mTaAdmin.getTeeId();
+            byte[] taID=mTaAdmin.getTaId();
 
             try {
                 mConsent =generateConsentData(serviceId, hashOfDeviceId, ConsentUtil.CONSENT_USAGE.ENROLLMENT);
@@ -581,7 +590,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         progressDialog.setTitle("Installing TA service");
                         progressDialog.show();
                         mTaAdmin.installTA(mConsent, this);
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                         ToastUtils.showToast(this, "Succeed to install TA service");
+                        btn_scan.performClick();
+
                     } catch (RuntimeException ex) {
                         ex.printStackTrace();
                     }
@@ -598,7 +612,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ToastUtils.showToast(this, "No TA service installed");
         } else {
             progressDialog.setTitle("Uninstalling TA service");
-            progressDialog.show();
+            if (!progressDialog.isShowing())
+                progressDialog.show();
             mTaAdmin.unInstallTA(this);
             ToastUtils.showToast(this, "Succeed to uninstall TA service");
         }
