@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BLEVirtualKey.iml" filepath="$PROJECT_DIR$/BLEVirtualKey.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FastBleLib/FastBleLib.iml" filepath="$PROJECT_DIR$/FastBleLib/FastBleLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tee-sdk/tee-sdk.iml" filepath="$PROJECT_DIR$/tee-sdk/tee-sdk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/virtualkey-java/virtualkey-java.iml" filepath="$PROJECT_DIR$/virtualkey-java/virtualkey-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/virtualkey-ta/virtualkey-ta.iml" filepath="$PROJECT_DIR$/virtualkey-ta/virtualkey-ta.iml" />
+      <module fileurl="file://$PROJECT_DIR$/virtualkey-ta/gp/virtualkey-ta-gp.iml" filepath="$PROJECT_DIR$/virtualkey-ta/gp/virtualkey-ta-gp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/virtualkey-tlc/virtualkey-tlc.iml" filepath="$PROJECT_DIR$/virtualkey-tlc/virtualkey-tlc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/virtualkey-tlc/gp/virtualkey-tlc-gp.iml" filepath="$PROJECT_DIR$/virtualkey-tlc/gp/virtualkey-tlc-gp.iml" />
+    </modules>
+  </component>
+</project>
