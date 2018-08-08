@@ -590,12 +590,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         progressDialog.setTitle("Installing TA service");
                         progressDialog.show();
                         mTaAdmin.installTA(mConsent, this);
-                        if (progressDialog.isShowing()) {
-                            progressDialog.dismiss();
-                        }
-                        ToastUtils.showToast(this, "Succeed to install TA service");
-                        btn_scan.performClick();
-
                     } catch (RuntimeException ex) {
                         ex.printStackTrace();
                     }
