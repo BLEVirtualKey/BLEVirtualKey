@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.virtualkey.app">
-    android:versionCode="3"
-    android:versionName="3.0" >
-    <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="19" />
+
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -17,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:name=".App"
+        android:name="com.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +23,8 @@
         <uses-library android:name="android.test.runner" />
 
         <activity
-            android:name=".MainActivity">
+            android:name="com.virtualkey.app.VckActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,11 +36,10 @@
             android:name=".operation.VckActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
     </application>
     <!--<instrumentation-->
-        <!--android:name="android.test.InstrumentationTestRunner"-->
-        <!--android:targetPackage="com.virtualkey.app" />-->
+    <!--android:name="android.test.InstrumentationTestRunner"-->
+    <!--android:targetPackage="com.virtualkey.app" />-->
 </manifest>

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.virtualkey.app.App;
+import com.App;
 
 /**
  * Toast工具类

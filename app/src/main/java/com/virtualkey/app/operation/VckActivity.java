@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.gemalto.virtualkey.api.virtualkey.Virtualkey;
 import com.gemalto.virtualkey.api.virtualkey.VirtualkeyException;
 import com.gemalto.virtualkey.taadmin.TaAdmin;
-import com.virtualkey.app.App;
-import com.virtualkey.app.Constant;
+import com.App;
+import com.Constant;
 import com.virtualkey.app.R;
 import com.virtualkey.app.TAFlow;
 import com.virtualkey.app.comm.Observer;
@@ -31,21 +31,15 @@ import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.utils.HexUtil;
 
-import org.spongycastle.util.encoders.Hex;
-
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-
+@Deprecated
 public class VckActivity extends AppCompatActivity implements Observer {
     private BleDevice mBleDevice;
     private BluetoothGattService mBluetoothGattService;

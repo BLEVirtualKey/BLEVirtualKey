@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,8 +21,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -37,12 +34,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.App;
 import com.gemalto.virtualkey.api.virtualkey.Virtualkey;
 import com.gemalto.virtualkey.taadmin.IVirtualkeyAdminNotification;
 import com.gemalto.virtualkey.taadmin.TaAdmin;
 import com.gto.tee.agentlibrary.Utils;
 import com.gto.tee.agentlibrary.proxy.AgentResultCodes;
 import com.gto.tee.agentlibrary.proxy.ProgressState;
+import com.Constant;
 import com.virtualkey.app.adapter.DeviceAdapter;
 import com.virtualkey.app.comm.ObserverManager;
 import com.virtualkey.app.operation.VckActivity;
@@ -148,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         BleManager.getInstance().destroy();
         uninstallTa();
         App.getLoggerHelper().i("==> MainActivity onDestory");
+
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.virtualkey.app;
+package com;
 
 /**
  * Created by hxie on 6/19/2017.

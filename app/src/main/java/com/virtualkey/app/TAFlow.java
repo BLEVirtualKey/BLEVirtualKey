@@ -6,6 +6,7 @@ import com.example.gemaltotest.EseSimulator;
 import com.gemalto.virtualkey.api.virtualkey.Virtualkey;
 import com.gemalto.virtualkey.api.virtualkey.VirtualkeyException;
 import com.gemalto.virtualkey.taadmin.TaAdmin;
+import com.Constant;
 import com.virtualkey.app.operation.VckActivity;
 import com.virtualkey.utilities.Utilities;
 

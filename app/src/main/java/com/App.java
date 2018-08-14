@@ -1,4 +1,4 @@
-package com.virtualkey.app;
+package com;
 
 import android.app.AlertDialog;
 import android.app.Application;
